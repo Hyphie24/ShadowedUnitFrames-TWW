@@ -1,0 +1,6 @@
+local f = CreateFrame("Frame")
+f:SetScript("OnEvent", function()
+UIParent:SetScale(0.53333333333333333333333333)
+ShadowUF.Layout:Reload()
+end)
+f:RegisterEvent('PLAYER_ENTERING_WORLD')
