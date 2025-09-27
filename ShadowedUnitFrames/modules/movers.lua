@@ -131,13 +131,24 @@ local function createConfigEnv()
 			return getValue("UnitStagger", math.random(2000, 10000))
 		end,
 		UnitAura = function(unit, id, filter)
-			if( type(id) ~= "number" or id > 40 ) then return end
+    if type(id) ~= "number" or id < 1 or id > 40 then return end
 
-			local texture = filter == "HELPFUL" and "Interface\\Icons\\Spell_Nature_Rejuvenation" or "Interface\\Icons\\Ability_DualWield"
-			local mod = id % 5
-			local auraType = mod == 0 and "Magic" or mod == 1 and "Curse" or mod == 2 and "Poison" or mod == 3 and "Disease" or "none"
-			return L["Test Aura"], texture, id, auraType, 0, 0, "player", id % 6 == 0
-		end,
+    local buffs = {
+        { "Test Buff", "Interface\\Icons\\Spell_Nature_Rejuvenation", 1, "Magic", 120, GetTime() + 120, "raid1", false, false, 12345, true,  false },
+        { "Test Buff 2", "Interface\\Icons\\Spell_Holy_MagicalSentry", 0, "Magic", 90, GetTime() + 90, "raid2", false, false, 54321, true,  false },
+    }
+
+    local debuffs = {
+        { "Test Debuff", "Interface\\Icons\\Ability_Creature_Cursed_02", 1, "Curse", 60, GetTime() + 60, "raid1", true, false, 67890, false, false },
+        { "Test Disease", "Interface\\Icons\\Spell_Nature_NullifyDisease", 1, "Disease", 45, GetTime() + 45, "raid2", false, false, 98765, false, false },
+    }
+
+    local source = (filter == "HELPFUL") and buffs or debuffs
+    local aura = source[id]
+    if not aura then return end
+
+    return unpack(aura)
+end,
 		UnitName = function(unit)
 			local unitID = string.match(unit, "(%d+)")
 			if( unitID ) then
